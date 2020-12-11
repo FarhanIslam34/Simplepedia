@@ -1,23 +1,53 @@
 /*
   ButtonBar.js
 
-  The `ButtonBar` component is a simple collection of buttons.
-
-  The bar has two states determined by `allowEdit`. If false, only an "Add" button is shown.
-  If true, then "Add", "Edit" and "Delete" are all shown. 
-
-  When a button is clicked, `handleClick` is called with "add", "edit" or "delete".
-
-  props:
-    allowEdit - a Boolean indicating if there is something that could be edited (required)
-    handleClick - a function called when a button is clicked (required)
+  Component for the button for Editor
 */
 
+import PropTypes from 'prop-types';
 
+export default function ButtonBar({handleClick, allowEdit}) {
 
-export default function ButtonBar({ allowEdit, handleClick }) {
-  return (
-    <></>
-  );
+    // If allowEdit is false, only render "Add" button
+    if (!allowEdit){
+        return ( <input 
+                type="button" 
+                aria-label="Add" 
+                value={"Add Article"} 
+                onClick={() => handleClick("add")}
+            />
+        )
+    }
+
+    // Otherwise, return all buttons
+    return ( 
+        <div>
+            <input 
+                type="button" 
+                aria-label="Add" 
+                value={"Add Article"} 
+                onClick={() => handleClick("add")}
+            />
+
+            <input 
+                type="button" 
+                aria-label="Edit" 
+                value={"Edit Article"} 
+                onClick={() => handleClick("edit")}
+            />
+
+            <input 
+                type="button" 
+                aria-label="Delete" 
+                value={"Delete Article"} 
+                onClick={() => handleClick("delete")}
+            />
+        </div>
+    )
 }
+
+ButtonBar.propTypes = {
+    handleClick: PropTypes.func.isRequired,
+    allowEdit: PropTypes.bool
+};
 

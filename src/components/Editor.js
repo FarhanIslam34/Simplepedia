@@ -1,29 +1,87 @@
 /*
   Editor.js
 
-  This provides a basic editor with space for entering a title and a body.
-
-  The interface has two buttons. If "Cancel" is clicked, the `complete` callback
-  is called with no arguments. If the "Save" button is clicked, the `complete` callback
-  is called with a new article object with `title`, `extract`, and `date`. 
-
-  If the optional `article` prop is set, the `title` and `extract` fields of the component
-  are pre-loaded with the values. In addition, all other properties of the object are 
-  included in the returned article object. 
-
-  props:
-    article - object with `title` and `extract` properties at minimum
-    complete - function to call on completion (required)
+  Component for creating new articles
 */
 
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
+export default function Editor({complete, article}) {
 
+   let articleVariable = null;
+   
+   // If no article is given, create an empty article
+   if (article === undefined){
+      articleVariable = {title: '', extract: '', edited: ''};
+   }else{
+       articleVariable = {...article};
+   }
 
-export default function Editor({ article, complete }) {
+   // Initialize state for title and body
+   const [title, changeTitle] = useState(articleVariable.title);
+   const [body, changeBody] = useState(articleVariable.extract);
 
+   const makeArticle = () => {
+       articleVariable.title = title
+       articleVariable.extract = body
+       articleVariable.edited = Date.now()
+       return articleVariable
+   }
 
-  return (
-    <></>
-  );
+   return  (
+       <div>
+           <div>
+               <input 
+                   id="title" 
+                   aria-label="title"
+                   placeholder="Enter a title"
+                   value={title}
+                   onChange={(event) =>{
+                       changeTitle(event.target.value);
+                       }
+                   }
+               /> 
+           </div>
+           <div>
+               <input 
+                   id="body" 
+                   aria-label="body"
+                   placeholder="Enter content for article"
+                   value={body}
+                   onChange={(event) =>{
+                       changeBody(event.target.value);
+                       }
+                   }
+               /> 
+           </div>
+           <div>
+               <input 
+                   type="button"
+                   aria-label="Save"
+                   placeholder="Save"
+                   disabled = {(!title)}
+                   value={"Save"}
+                   onClick={() => {
+                       complete(makeArticle())
+                       }
+                   }
+               />
+
+               <input 
+                   type="button"
+                   aria-label="Cancel"
+                   placeholder="Cancel"
+                   value={"Cancel"}
+                   onClick={() => complete()}
+               />
+           </div>
+
+       </div>
+   )
 }
 
+Editor.propTypes = {
+    complete: PropTypes.func.isRequired,
+    article: PropTypes.object
+};
